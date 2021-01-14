@@ -1,0 +1,11 @@
+{
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true
+    }
+  ],
+  "namespace": "",
+  "sfdcLoginUrl": "https://cunning-impala-69f3t1-dev-ed.my.salesforce.com",
+  "sourceApiVersion": "50.0"
+}
