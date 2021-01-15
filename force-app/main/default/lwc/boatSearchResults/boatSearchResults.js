@@ -1,135 +1,155 @@
-import {
-  subscribe,
-  unsubscribe,
-  APPLICATION_SCOPE,
-  MessageContext,
-  publish,
-} from "lightning/messageService";
-import BOATMC from "@salesforce/messageChannel/BoatMessageChannel__c";
-import { LightningElement, wire, api, track } from "lwc";
+import { LightningElement, api, track, wire } from "lwc";
 import getBoats from "@salesforce/apex/BoatDataService.getBoats";
-import { updateRecord } from "lightning/uiRecordApi";
+import { publish, MessageContext } from "lightning/messageService";
+import BOATMC from "@salesforce/messageChannel/BoatMessageChannel__c";
+import { updateRecord, getRecord } from "lightning/uiRecordApi";
 import { refreshApex } from "@salesforce/apex";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import updateBoatList from "@salesforce/apex/BoatDataService.updateBoatList";
-const columns = [
-  { label: "Name", fieldName: "Name", type: "text" },
-  { label: "Length", fieldName: "Length__c", type: "number" },
-  { label: "Price", fieldName: "Price__c", type: "currency" },
-  {
-    label: "Description",
-    fieldName: "Description__c",
-    type: "text",
-    editable: true,
-  },
-];
-const SUCCESS_TITLE = "Success";
-const MESSAGE_SHIP_IT = "Ship it!";
-const SUCCESS_VARIANT = "success";
-const ERROR_TITLE = "Error";
-const ERROR_VARIANT = "error";
+
 export default class BoatSearchResults extends LightningElement {
-  connectedCallback() {
-    this.subscribeToMessageChannel();
-  }
+  @track
+  boats;
+
+  @track
+  draftValues = [];
+
   selectedBoatId;
-  columns = columns;
-  @api boatTypeId = "";
-  @track boats;
-  @track draftValues = [];
+
+  columns = [
+    { label: "Name", fieldName: "Name", type: "text", editable: true },
+    { label: "Length", fieldName: "Length__c", type: "number", editable: true },
+    { label: "Price", fieldName: "Price__c", type: "currency", editable: true },
+    {
+      label: "Description",
+      fieldName: "Description__c",
+      type: "text",
+      editable: true,
+    },
+  ];
+
+  boatTypeId = "";
+
   isLoading = false;
-  subscription = false;
-  @wire(MessageContext)
-  messageContext;
+
+  error;
+
+  wiredBoatsOriginal;
+
   @wire(getBoats, { boatTypeId: "$boatTypeId" })
   wiredBoats(result) {
-    if (result.data) {
-      this.boats = result;
-      console.log(result.data);
+    console.log(result);
+    this.wiredBoatsOriginal = result;
+    const { data, error } = result;
+    if (data) {
+      this.boats = data;
+      this.error = undefined;
+    } else if (error) {
+      this.data = undefined;
+      this.error = error;
     }
-  }
-  @api
-  searchBoats(boatTypeId) {
-    this.boatTypeId = boatTypeId;
-    this.notifyLoading();
-  }
-  @api
-  async refresh() {
-    this.notifyLoading();
-    return refreshApex(this.boats);
+
+    this.notifyLoading(true);
   }
 
-  // this function must update selectedBoatId and call sendMessageService
+  @wire(MessageContext)
+  messageContext;
+
+  @api
+  searchBoats(boatTypeId) {
+    this.notifyLoading(false);
+    this.boatTypeId = boatTypeId;
+
+    /* 
+        console.log('enter ' + boatTypeId);
+        const loadingEvent = new CustomEvent('loading');
+        this.dispatchEvent(loadingEvent);
+
+        getBoats({boatTypeId : boatTypeId})
+        .then(result => {
+            console.log(result);
+            this.boats = result;
+            const doneloadingEvent = new CustomEvent('doneloading');
+            this.dispatchEvent(doneloadingEvent);
+        })
+        .catch(error => {
+            const doneloadingEvent = new CustomEvent('doneloading');
+            this.dispatchEvent(doneloadingEvent);
+        }); */
+  }
+
   updateSelectedTile(event) {
     this.selectedBoatId = event.detail.boatId;
+    console.log(event.detail.boatId);
     this.sendMessageService(this.selectedBoatId);
   }
 
-  // Publishes the selected boat Id on the BoatMC.
   sendMessageService(boatId) {
+    console.log("message service ");
     const message = {
-      recordId: boatId,
+      boatId: boatId,
     };
     publish(this.messageContext, BOATMC, message);
   }
+
+  @api
+  async refresh() {
+    this.notifyLoading(true);
+    return refreshApex(this.boats);
+  }
+
+  // Check the current value of isLoading before dispatching the doneloading or
+  //loading custom event
+  notifyLoading(isLoading) {
+    if (isLoading) {
+      const doneloadingEvent = new CustomEvent("doneloading");
+      this.dispatchEvent(doneloadingEvent);
+    } else {
+      const doneloadingEvent = new CustomEvent("loading");
+      this.dispatchEvent(doneloadingEvent);
+    }
+  }
+
   // This method must save the changes in the Boat Editor
   // Show a toast message with the title
   // clear lightning-datatable draft values
   handleSave(event) {
+    this.notifyLoading(false);
     const recordInputs = event.detail.draftValues.slice().map((draft) => {
       const fields = Object.assign({}, draft);
       return { fields };
     });
     const promises = recordInputs.map((recordInput) =>
       //update boat record
-      {
-        updateRecord(recordInput);
-      }
+      updateRecord(recordInput)
     );
     Promise.all(promises)
       .then(() => {
+        console.log("in then ");
+
+        this.draftValues = [];
+
         this.dispatchEvent(
           new ShowToastEvent({
-            title: SUCCESS_TITLE,
-            message: MESSAGE_SHIP_IT,
-            variant: SUCCESS_VARIANT,
+            title: "Success",
+            message: "Ship It!",
+            variant: "success",
           })
         );
-        // Display fresh data in the form
         this.refresh();
       })
       .catch((error) => {
         this.dispatchEvent(
           new ShowToastEvent({
-            title: "ERROR_TITLE",
-            message: error.body.message,
-            variant: ERROR_VARIANT,
+            title: "Error",
+            message: error,
+            variant: "error",
           })
         );
       })
-      .finally(() => {});
-  }
-  // Check the current value of isLoading before dispatching the doneloading or loading custom event
-  notifyLoading(isLoading) {
-    if (isLoading) {
-      const myCustomEvent = new CustomEvent("doneloading");
-      this.dispatchEvent(myCustomEvent);
-    } else {
-      const myCustomEvent = new CustomEvent("loading");
-      this.dispatchEvent(myCustomEvent);
-    }
-  }
-  handleMessage(message) {
-    this.selectedBoatId = message.recordId;
-  }
-  subscribeToMessageChannel() {
-    if (!this.subscription) {
-      this.subscription = subscribe(
-        this.messageContext,
-        BOATMC,
-        (message) => this.handleMessage(message),
-        { scope: APPLICATION_SCOPE }
-      );
-    }
+      .finally(() => {
+        console.log("in finally");
+        // this.refresh();
+      });
   }
 }
