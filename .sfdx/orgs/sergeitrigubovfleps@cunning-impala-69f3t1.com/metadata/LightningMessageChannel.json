@@ -1,0 +1,31 @@
+{
+  "status": 0,
+  "result": [
+    {
+      "createdById": "0055g000002zRpOAAU",
+      "createdByName": "Sergei Trigubov",
+      "createdDate": "2021-01-15T07:25:06.000Z",
+      "fileName": "messageChannels/BoatMessageChannel.messageChannel",
+      "fullName": "BoatMessageChannel",
+      "id": "1295g000000k9niAAA",
+      "lastModifiedById": "0055g000002zRpOAAU",
+      "lastModifiedByName": "Sergei Trigubov",
+      "lastModifiedDate": "2021-01-15T07:25:06.000Z",
+      "manageableState": "unmanaged",
+      "type": "LightningMessageChannel"
+    },
+    {
+      "createdById": "0055g000002zRpOAAU",
+      "createdByName": "Sergei Trigubov",
+      "createdDate": "2021-01-15T07:24:03.000Z",
+      "fileName": "messageChannels/MyMessageChannel.messageChannel",
+      "fullName": "MyMessageChannel",
+      "id": "1295g000000k9ndAAA",
+      "lastModifiedById": "0055g000002zRpOAAU",
+      "lastModifiedByName": "Sergei Trigubov",
+      "lastModifiedDate": "2021-01-15T07:24:03.000Z",
+      "manageableState": "unmanaged",
+      "type": "LightningMessageChannel"
+    }
+  ]
+}
