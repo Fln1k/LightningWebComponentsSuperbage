@@ -761,5 +761,114 @@
       "exports": [{ "type": "ExportDefaultDeclaration" }]
     },
     "updatedAt": "2021-01-15T09:35:39.047Z"
+  },
+  {
+    "_allAttributes": null,
+    "_properties": null,
+    "_methods": null,
+    "file": "d:/projects/LightningWebComponentsSuperbage/force-app/main/default/lwc/fiveStarRating/fiveStarRating.js",
+    "metadata": {
+      "decorators": [
+        {
+          "type": "api",
+          "targets": [
+            {
+              "type": "property",
+              "name": "readOnly",
+              "value": { "type": "unresolved" }
+            },
+            {
+              "type": "property",
+              "name": "value",
+              "value": { "type": "unresolved" }
+            }
+          ]
+        }
+      ],
+      "declarationLoc": {
+        "start": { "line": 11, "column": 0 },
+        "end": { "line": 77, "column": 1 }
+      },
+      "classMembers": [
+        {
+          "type": "property",
+          "name": "readOnly",
+          "loc": {
+            "start": { "line": 13, "column": 2 },
+            "end": { "line": 13, "column": 16 }
+          },
+          "decorator": "api",
+          "value": { "type": "unresolved" }
+        },
+        {
+          "type": "property",
+          "name": "value",
+          "loc": {
+            "start": { "line": 14, "column": 2 },
+            "end": { "line": 14, "column": 13 }
+          },
+          "decorator": "api",
+          "value": { "type": "unresolved" }
+        },
+        {
+          "type": "property",
+          "name": "editedValue",
+          "loc": {
+            "start": { "line": 16, "column": 2 },
+            "end": { "line": 16, "column": 14 }
+          }
+        },
+        {
+          "type": "property",
+          "name": "isRendered",
+          "loc": {
+            "start": { "line": 17, "column": 2 },
+            "end": { "line": 17, "column": 13 }
+          }
+        },
+        {
+          "type": "property",
+          "name": "starClass",
+          "loc": {
+            "start": { "line": 20, "column": 2 },
+            "end": { "line": 22, "column": 3 }
+          }
+        },
+        {
+          "type": "method",
+          "name": "renderedCallback",
+          "loc": {
+            "start": { "line": 25, "column": 2 },
+            "end": { "line": 31, "column": 3 }
+          }
+        },
+        {
+          "type": "method",
+          "name": "loadScript",
+          "loc": {
+            "start": { "line": 36, "column": 2 },
+            "end": { "line": 51, "column": 3 }
+          }
+        },
+        {
+          "type": "method",
+          "name": "initializeRating",
+          "loc": {
+            "start": { "line": 53, "column": 2 },
+            "end": { "line": 68, "column": 3 }
+          }
+        },
+        {
+          "type": "method",
+          "name": "ratingChanged",
+          "loc": {
+            "start": { "line": 72, "column": 2 },
+            "end": { "line": 76, "column": 3 }
+          }
+        }
+      ],
+      "exports": [{ "type": "ExportDefaultDeclaration" }]
+    },
+    "updatedAt": "2021-01-15T13:51:19.406Z"
   }
 ]

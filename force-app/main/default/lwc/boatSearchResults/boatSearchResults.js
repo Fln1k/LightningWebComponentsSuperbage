@@ -59,23 +59,6 @@ export default class BoatSearchResults extends LightningElement {
   searchBoats(boatTypeId) {
     this.notifyLoading(false);
     this.boatTypeId = boatTypeId;
-
-    /* 
-        console.log('enter ' + boatTypeId);
-        const loadingEvent = new CustomEvent('loading');
-        this.dispatchEvent(loadingEvent);
-
-        getBoats({boatTypeId : boatTypeId})
-        .then(result => {
-            console.log(result);
-            this.boats = result;
-            const doneloadingEvent = new CustomEvent('doneloading');
-            this.dispatchEvent(doneloadingEvent);
-        })
-        .catch(error => {
-            const doneloadingEvent = new CustomEvent('doneloading');
-            this.dispatchEvent(doneloadingEvent);
-        }); */
   }
 
   updateSelectedTile(event) {
